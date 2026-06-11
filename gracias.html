@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A237E">
+<title>LPS Tienda — Estado del pago</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--azul:#1A237E;--amarillo:#FFD000;--rojo:#C62828;--verde:#1B7A3D;--gris:#5A5F73;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:#F4F5FA;min-height:100vh;display:flex;flex-direction:column;}
+.cinta{height:10px;background:repeating-linear-gradient(135deg,var(--amarillo) 0 18px,#1B1E2B 18px 36px);}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:#fff;border:1px solid #E4E6F0;border-radius:18px;max-width:440px;width:100%;padding:34px 28px;text-align:center;}
+.icono{font-size:54px;}
+h1{font-size:21px;margin:14px 0 8px;color:var(--azul);}
+p{font-size:14.5px;color:var(--gris);line-height:1.55;}
+.orden{font-family:monospace;background:#EEF0F8;border-radius:8px;padding:6px 12px;display:inline-block;margin-top:12px;font-size:13px;}
+a.btn{display:block;margin-top:18px;background:var(--azul);color:#fff;text-decoration:none;border-radius:11px;padding:13px;font-weight:700;font-size:15px;}
+a.btn.wa{background:#fff;color:var(--verde);border:2px solid var(--verde);margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="cinta"></div>
+<main>
+  <div class="card">
+    <div class="icono" id="icono">⏳</div>
+    <h1 id="titulo">Procesando…</h1>
+    <p id="texto"></p>
+    <div class="orden" id="orden" hidden></div>
+    <a class="btn" href="/">Volver a la tienda</a>
+    <a class="btn wa" id="btn-wa" href="https://wa.me/5493584602508" hidden>Avisar por WhatsApp 💬</a>
+  </div>
+</main>
+<div class="cinta"></div>
+<script>
+const p=new URLSearchParams(location.search);
+const estado=p.get('estado')||p.get('collection_status')||'';
+const orden=p.get('orden')||p.get('external_reference')||'';
+const $=id=>document.getElementById(id);
+if(orden){$('orden').textContent='Orden '+orden;$('orden').hidden=false;}
+if(estado==='aprobado'||estado==='approved'){
+  $('icono').textContent='✅';
+  $('titulo').textContent='¡Pago recibido!';
+  $('texto').textContent='Gracias por tu compra. Ya nos llegó la confirmación y te vamos a escribir por WhatsApp para coordinar el retiro o la entrega.';
+  $('btn-wa').hidden=false;
+}else if(estado==='pendiente'||estado==='pending'||estado==='in_process'){
+  $('icono').textContent='🕐';
+  $('titulo').textContent='Pago pendiente';
+  $('texto').textContent='Tu pago está en proceso de acreditación. Apenas se confirme, te contactamos para coordinar la entrega.';
+  $('btn-wa').hidden=false;
+}else{
+  $('icono').textContent='❌';
+  $('titulo').textContent='El pago no se completó';
+  $('texto').textContent='No se realizó ningún cargo. Podés volver a intentarlo desde la tienda o encargar por WhatsApp y pagar en el local.';
+  $('btn-wa').hidden=false;
+}
+</script>
+</body>
+</html>
